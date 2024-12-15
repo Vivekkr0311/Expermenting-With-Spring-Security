@@ -1,5 +1,6 @@
 package Learning_JWT.controllers;
 
+import Learning_JWT.entities.TokenClass;
 import Learning_JWT.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,10 @@ public class DataController {
     @GetMapping("/auth")
     public ResponseEntity<?> getAuthToken(Authentication authentication){
         try{
+            TokenClass tokenResponse = new TokenClass();
+            tokenResponse.setToken(jwtUtils.generateToken(authentication.getName()));
             return new ResponseEntity<>(
-                    jwtUtils.generateToken(authentication.getName()),
+                   tokenResponse,
                     HttpStatus.CREATED
             );
         }catch (Exception e){
