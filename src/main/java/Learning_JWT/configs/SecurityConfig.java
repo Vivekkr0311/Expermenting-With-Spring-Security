@@ -44,6 +44,17 @@ public class SecurityConfig {
                         .requestMatchers("/data/**").authenticated() // Protected endpoints
                 );
         http.httpBasic(httpSecurityHttpBasicConfigurer -> {});
+
+        // http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); because of which Spring Security knows that when JWT
+        // token comes, let JWT filter class validating the token, so that this Spring Security class
+        // do not need to do those work
+
+        // http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // tells Spring Security to add the JwtAuthenticationFilter before the
+        // UsernamePasswordAuthenticationFilter in the filter chain.
+        // This ensures that the JWT validation happens first,
+        // before Spring Security handles authentication
+        // (which is typically done by UsernamePasswordAuthenticationFilter).
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
