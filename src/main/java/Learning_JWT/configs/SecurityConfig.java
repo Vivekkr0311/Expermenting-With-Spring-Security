@@ -16,15 +16,20 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+//    Not necessarily required, as it already being configured by Spring Security when Component class of UserDetailServiceImpl is created.
+//    @Autowired
+//    private UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+/*  1. No Need for DaoAuthenticationProvider
+    By default, Spring Security auto-configures a DaoAuthenticationProvider if it finds:
+    A UserDetailsService bean.
+    A PasswordEncoder bean.
+    Since you have both (UserDetailsServiceImpl and BCryptPasswordEncoder), Spring Security registers a DaoAuthenticationProvider behind the scenes.
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -32,11 +37,16 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
+*/
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-//        return configuration.getAuthenticationManager();
-//    }
+/*    Similar to DaoAuthenticationProvider, Spring Security automatically configures an AuthenticationManager when:
+      An AuthenticationProvider is present.
+      Since the default configuration works for your use case, the explicit AuthenticationManager bean is unnecessary.
+      @Bean
+      public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+      }
+ */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,7 +57,8 @@ public class SecurityConfig {
                         .requestMatchers("/data/**").authenticated() // Protected endpoints
                 );
         http.httpBasic(httpSecurityHttpBasicConfigurer -> {});
-        http.authenticationProvider(authenticationProvider());
+//        Below is already being configured by Spring Security when UserDetailServiceImpl is created.
+//        http.authenticationProvider(authenticationProvider());
         return http.build();
     }
 }
