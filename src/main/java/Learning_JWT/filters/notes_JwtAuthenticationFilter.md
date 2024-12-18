@@ -26,3 +26,5 @@ Then, set this authentication object in the `SecurityContextHolder` like this:
 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 ```  
 12. Finally, call the `doFilter` method with the `HttpServletRequest`, `HttpServletResponse`, and `FilterChain` that were passed to the `doFilterInternal` method.
+
+Its like JWT is saying, I have completed all the tasks related to JWT token authentication. Now, Spring Security (or any other framework/component in the filter chain), you can take over and process the request further. If there are other filters in the chain, let them execute as well. Finally, deliver the request to its intended destination (e.g., a controller or resource).
